@@ -107,6 +107,8 @@ function addImages(playerChoice, computerChoice){
     } else if (computerChoice === "Scissors"){
         computerImage.src = "img/scissors.png";
     }
+    playerTag.textContent = "";
+    computerTag.textContent = "";
 
     setTimeout(() => {
         playerImage.className="selectedImageClass";
@@ -116,12 +118,9 @@ function addImages(playerChoice, computerChoice){
 
 }
 
-
-
 function updateScore () {
     const playerScore = document.querySelector(".playerScore p");
     playerScore.textContent = humanWins;
-    
     const compScore = document.querySelector(".computerScore p");
     compScore.textContent = compWins;
 }
@@ -133,11 +132,9 @@ function gameOver() {
     resultDiv.className = "resultDivClass";
 
     let resultText = document.createElement("p");
-    let winner = ""; 
     if (compWins === 5){
-        winner = "Computer"
-    } else { winner = "You"}
-    resultText.textContent = `Congratulations to ${winner.toLowerCase()}, who got to five rounds first.`;
+        resultText.textContent = "Computer won. Congratulations to you for getting second place"
+    } else { resultText.textContent = `Congratulations to you, who got to five rounds first and beat the machine`};
     let newButton = document.createElement("button");
     newButton.textContent = "Press here to play again";
     newButton.addEventListener("click", ()=>{
