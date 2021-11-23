@@ -1,34 +1,51 @@
 let humanWins = 0;
 let compWins = 0;
 let draws = 0;
-let round = 0;
+
+function main(){
+    const rockImage = document.querySelector(".Rock");
+    const paperImage = document.querySelector(".Paper");
+    const scissorImage = document.querySelector(".Scissors");
+
+    rockImage.addEventListener("click", e => {
+        game(e.target.className);
+    });
+    
+    paperImage.addEventListener("click", e => {
+        game(e.target.className);
+    });
+
+    scissorImage.addEventListener("click", e => {
+        game(e.target.className);
+    });
+}
 
 
-function game(){
-    const buttons = document.querySelectorAll("button");
-    const choices = document.querySelector(".choices")
-    buttons.forEach((button) => button.addEventListener("click", () =>{
-        let playerChoice = button.id;
-        let computerChoice = computerSelection();
-        choices.textContent = `You selected ${playerChoice} and the computer went for ${computerChoice}`;
-        let result = playRound(playerChoice, computerChoice);
-        round++;
-        if (result === 1){
-            humanWins++;
-            choices.textContent += ". You win!";
-        } else if (result === -1){
-            compWins++;
-            choices.textContent += ". Computer win!";
-        } else {
-            draws++;
-            choices.textContent += ". It's a draw!";
+function game(playerSelection){
+    let playerChoice = playerSelection;
+    let computerChoice = computerSelection();
+    addImages(playerChoice, computerChoice);
+
+    const choices = document.querySelector(".roundResult")
+    choices.textContent = `You selected ${playerChoice} and the computer went for ${computerChoice}`;
+        
+    let result = playRound(playerChoice, computerChoice);
+        
+    if (result === 1){
+        humanWins++;
+        choices.textContent += ". You win!";
+    } else if (result === -1){
+        compWins++;
+        choices.textContent += ". Computer win!";
+    } else {
+        draws++;
+        choices.textContent += ". It's a draw!";
         }
-        updateScore();
-        if (humanWins === 5 || compWins === 5)  {
-            gameOver();
-        } 
-    }));
+    updateScore();
 
+    if (humanWins === 5 || compWins === 5)  {
+        gameOver();
+    } 
 }
 
 
@@ -64,26 +81,99 @@ function playRound(playerChoice, computerChoice){
     }
 }
 
+function addImages(playerChoice, computerChoice){
+    const infoHeader = document.querySelector("#infoheader");
+    const playerTag = document.querySelector(".playerChoice p");
+    const computerTag = document.querySelector(".computerChoice p");
 
-const updateScore = () => {
-    const resultDiv = document.querySelector(".results");
-    resultDiv.textContent = `Human wins: ${humanWins}.\nComputer wins: ${compWins}.\nNumber of draws: ${draws}.`;
+    const playerImage = document.querySelector(".playerChoice img")
+    const computerImage = document.querySelector(".computerChoice img")
+
+    playerImage.className="selectedImageClassTwo";
+    computerImage.className="selectedImageClassTwo";
+
+    if (playerChoice === "Rock"){
+        playerImage.src = "img/hand.png";
+    } else if (playerChoice === "Paper"){
+        playerImage.src = "img/paper.png";
+    } else if (playerChoice === "Scissors"){
+        playerImage.src = "img/scissors.png";
+    }
+
+    if (computerChoice === "Rock"){
+        computerImage.src = "img/hand.png";
+    } else if (computerChoice === "Paper"){
+        computerImage.src = "img/paper.png";
+    } else if (computerChoice === "Scissors"){
+        computerImage.src = "img/scissors.png";
+    }
+
+    setTimeout(() => {
+        playerImage.className="selectedImageClass";
+        computerImage.className="selectedImageClass";
+        playerTag.textContent = playerChoice;
+        computerTag.textContent = computerChoice;}, 60);
+
 }
 
-const gameOver = () => {
-    if (humanWins === 5){
-        alert("Human goes first to five games.")
-    } else {
-        alert("Computer goes first to five games.");
-    }
+
+
+function updateScore () {
+    const playerScore = document.querySelector(".playerScore p");
+    playerScore.textContent = humanWins;
+    
+    const compScore = document.querySelector(".computerScore p");
+    compScore.textContent = compWins;
+}
+
+function gameOver() {
+    let round = document.querySelector(".round");
+    let containerDiv = document.querySelector(".container");
+    let resultDiv = document.createElement("div");
+    resultDiv.className = "resultDivClass";
+
+    let resultText = document.createElement("p");
+    let winner = ""; 
+    if (compWins === 5){
+        winner = "Computer"
+    } else { winner = "You"}
+    resultText.textContent = `Congratulations to ${winner.toLowerCase()}, who got to five rounds first.`;
+    let newButton = document.createElement("button");
+    newButton.textContent = "Press here to play again";
+    newButton.addEventListener("click", ()=>{
+        resultDiv.parentNode.removeChild(resultDiv);
+        reset();
+    })
+    resultDiv.append(resultText);
+    resultDiv.append(newButton);
+    containerDiv.insertBefore(resultDiv, round);
+}
+
+function reset() {
+    //Resetting global stats
     humanWins = 0;
     compWins = 0;
     draws = 0;
-    round = 0;
-    updateScore();
-    const choices = document.querySelector(".choices")
-    choices.textContent = "";
+    
+    //Resetting last made choice
+    const playerTag= document.querySelector(".playerChoice p");
+    const computerTag = document.querySelector(".computerChoice p");
+    const playerImage = document.querySelector(".playerChoice img")
+    const computerImage = document.querySelector(".computerChoice img")
+    computerImage.className = "selectedImageClassTwo";
+    playerImage.className = "selectedImageClassTwo";
+    playerTag.textContent = "";
+    computerTag.textContent  = "";
+
+
+    const roundResult = document.querySelector(".roundResult");
+    roundResult.textContent = "";
+
+    const playerScore = document.querySelector(".playerScore p");
+    playerScore.textContent = humanWins;
+    
+    const compScore = document.querySelector(".computerScore p");
+    compScore.textContent = compWins;
 }
 
-
-game();
+main();
